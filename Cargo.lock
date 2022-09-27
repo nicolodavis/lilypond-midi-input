@@ -171,6 +171,7 @@ version = "0.1.0"
 dependencies = [
  "midir",
  "midly",
+ "xdotool",
 ]
 
 [[package]]
@@ -429,3 +430,9 @@ name = "windows_x86_64_msvc"
 version = "0.32.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "504a2476202769977a040c6364301a3f65d0cc9e3fb08600b2bda150a0488316"
+
+[[package]]
+name = "xdotool"
+version = "0.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b1e9d309fb1089c718058e3e5d6010c5b0a55f7224262806ad659e408d3f222"

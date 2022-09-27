@@ -4,12 +4,44 @@ use error::{Error, Result};
 use midir::{MidiInput, MidiInputPort};
 use midly::{live::LiveEvent, MidiMessage};
 
+fn translate(key: u8) -> &'static str {
+    match key {
+        60 => "c",
+        61 => "c+i+s",
+        62 => "d",
+        63 => "d+i+s",
+        64 => "e",
+        65 => "f",
+        66 => "f+i+s",
+        67 => "g",
+        68 => "g+i+s",
+        69 => "a",
+        70 => "a+i+s",
+        71 => "b",
+        _ => "",
+    }
+}
+
+fn process_key(key: u8) {
+    println!("{}", key);
+    let opts = xdotool::optionvec::OptionVec::<xdotool::command::options::KeyboardOption>::new();
+    let key = translate(key);
+    if !key.is_empty() {
+        xdotool::keyboard::send_key(key, opts);
+    }
+}
+
 fn on_midi(_timestamp: u64, event: &[u8], _data: &mut ()) {
     let event = LiveEvent::parse(event).unwrap();
     match event {
-        LiveEvent::Midi { channel, message } => match message {
-            MidiMessage::NoteOn { key, vel: _ } => {
-                println!("hit note {} on channel {}", key, channel);
+        LiveEvent::Midi {
+            channel: _,
+            message,
+        } => match message {
+            MidiMessage::NoteOn { key, vel } => {
+                if vel > 0 {
+                    process_key(key.as_int());
+                }
             }
             _ => {}
         },
