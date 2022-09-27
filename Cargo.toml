@@ -1,0 +1,8 @@
+[package]
+name = "lilypond-midi-entry"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+midir = "0.8"
+midly = "0.5"
