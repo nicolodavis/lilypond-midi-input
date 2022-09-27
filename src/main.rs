@@ -4,34 +4,85 @@ use error::{Error, Result};
 use midir::{MidiInput, MidiInputPort};
 use midly::{live::LiveEvent, MidiMessage};
 
-fn translate(key: u8) -> &'static str {
-    match key {
-        60 => "c",
-        61 => "c+i+s",
-        62 => "d",
-        63 => "d+i+s",
-        64 => "e",
-        65 => "f",
-        66 => "f+i+s",
-        67 => "g",
-        68 => "g+i+s",
-        69 => "a",
-        70 => "a+i+s",
-        71 => "b",
-        _ => "",
+struct Data {
+    pub mode: Mode,
+}
+
+impl Default for Data {
+    fn default() -> Self {
+        Self { mode: Mode::Sharp }
     }
 }
 
-fn process_key(key: u8) {
-    println!("{}", key);
-    let opts = xdotool::optionvec::OptionVec::<xdotool::command::options::KeyboardOption>::new();
-    let key = translate(key);
+#[derive(Debug)]
+enum Mode {
+    Sharp,
+    Flat,
+}
+
+impl Mode {
+    pub fn flip(&self) -> Self {
+        match self {
+            Mode::Sharp => Mode::Flat,
+            Mode::Flat => Mode::Sharp,
+        }
+    }
+}
+
+fn translate(key: u8, data: &Data) -> &'static str {
+    match data.mode {
+        Mode::Sharp => match key {
+            60 => "c",
+            61 => "cis",
+            62 => "d",
+            63 => "dis",
+            64 => "e",
+            65 => "f",
+            66 => "fis",
+            67 => "g",
+            68 => "gis",
+            69 => "a",
+            70 => "ais",
+            71 => "b",
+            _ => "",
+        },
+
+        Mode::Flat => match key {
+            60 => "c",
+            61 => "des",
+            62 => "d",
+            63 => "ees",
+            64 => "e",
+            65 => "f",
+            66 => "ges",
+            67 => "g",
+            68 => "aes",
+            69 => "a",
+            70 => "bes",
+            71 => "b",
+            _ => "",
+        },
+    }
+}
+
+fn opts() -> xdotool::optionvec::OptionVec<xdotool::command::options::KeyboardOption> {
+    xdotool::optionvec::OptionVec::<xdotool::command::options::KeyboardOption>::new()
+}
+
+fn process_key(key: u8, data: &mut Data) {
+    if key == 96 {
+        data.mode = data.mode.flip();
+        return;
+    }
+
+    let key = translate(key, data);
     if !key.is_empty() {
-        xdotool::keyboard::send_key(key, opts);
+        xdotool::keyboard::type_text(key, opts());
+        xdotool::keyboard::send_key("space", opts());
     }
 }
 
-fn on_midi(_timestamp: u64, event: &[u8], _data: &mut ()) {
+fn on_midi(_timestamp: u64, event: &[u8], data: &mut Data) {
     let event = LiveEvent::parse(event).unwrap();
     match event {
         LiveEvent::Midi {
@@ -40,7 +91,7 @@ fn on_midi(_timestamp: u64, event: &[u8], _data: &mut ()) {
         } => match message {
             MidiMessage::NoteOn { key, vel } => {
                 if vel > 0 {
-                    process_key(key.as_int());
+                    process_key(key.as_int(), data);
                 }
             }
             _ => {}
@@ -64,7 +115,8 @@ fn get_through_port(client: &MidiInput) -> Result<MidiInputPort> {
 fn run() -> Result<()> {
     let client = MidiInput::new("lilypond-midi-entry")?;
     let port = get_through_port(&client)?;
-    let _connection = client.connect(&port, "midi-through", on_midi, ())?;
+    let data = Data::default();
+    let _connection = client.connect(&port, "midi-through", on_midi, data)?;
 
     loop {
         std::thread::sleep(std::time::Duration::from_millis(2));
