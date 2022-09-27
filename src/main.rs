@@ -122,6 +122,7 @@ fn run() -> Result<()> {
         std::thread::sleep(std::time::Duration::from_millis(2));
     }
 
+    #[allow(unreachable_code)]
     Ok(())
 }
 
