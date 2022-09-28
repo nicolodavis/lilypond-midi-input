@@ -9,6 +9,25 @@ pub struct Args {
     pub port: String,
 
     /// The MIDI event that is used to toggle between sharp / flat modes.
-    #[clap(short, long, value_parser, default_value_t = 96)]
-    pub flat_toggle: u8,
+    #[clap(long, value_parser, default_value_t = 96)]
+    pub midi_flat_toggle: u8,
+
+    /// The MIDI event that is used to enable a dotted duration.
+    #[clap(long, value_parser, default_value_t = 87)]
+    pub midi_duration_dot: u8,
+    /// The MIDI event that is used to enable duration 1.
+    #[clap(long, value_parser, default_value_t = 84)]
+    pub midi_duration_1: u8,
+    /// The MIDI event that is used to enable duration 2.
+    #[clap(long, value_parser, default_value_t = 86)]
+    pub midi_duration_2: u8,
+    /// The MIDI event that is used to enable duration 4.
+    #[clap(long, value_parser, default_value_t = 88)]
+    pub midi_duration_4: u8,
+    /// The MIDI event that is used to enable duration 8.
+    #[clap(long, value_parser, default_value_t = 89)]
+    pub midi_duration_8: u8,
+    /// The MIDI event that is used to enable duration 16.
+    #[clap(long, value_parser, default_value_t = 91)]
+    pub midi_duration_16: u8,
 }

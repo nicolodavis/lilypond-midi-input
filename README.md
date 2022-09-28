@@ -5,7 +5,8 @@ Enter LilyPond notes like "c", "d", "gis" etc. using a MIDI controller.
 ## Features
 
 - Supports two octaves below and above middle C.
-- Toggle between sharp and flat note entries using an assignable midi key.
+- Toggle between sharp and flat note entries using an assignable MIDI key.
+- Toggle note durations with assignable MIDI keys.
 
 ## Building
 

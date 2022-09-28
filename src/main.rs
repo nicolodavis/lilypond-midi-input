@@ -19,9 +19,14 @@ fn on_midi_event(_timestamp: u64, event: &[u8], data: &mut Data) {
         } => match message {
             MidiMessage::NoteOn { key, vel } => {
                 if vel > 0 {
-                    handler::process_key(key.as_int(), data);
+                    handler::process_note_on(key.as_int(), data);
+                }
+
+                if vel == 0 {
+                    handler::process_note_off(key.as_int(), data);
                 }
             }
+
             _ => {}
         },
         _ => {}

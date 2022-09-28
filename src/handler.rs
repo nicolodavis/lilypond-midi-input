@@ -1,11 +1,35 @@
-use crate::data::{Data, Mode};
+use crate::data::{Data, Duration, Mode};
 use enigo::KeyboardControllable;
 
 /// Handler for MIDI events.
-pub fn process_key(key: u8, data: &mut Data) {
-    if key == data.args.flat_toggle {
+pub fn process_note_on(key: u8, data: &mut Data) {
+    if key == data.args.midi_flat_toggle {
         data.mode = data.mode.flip();
         return;
+    }
+
+    if key == data.args.midi_duration_dot {
+        data.duration_dot = true;
+    }
+
+    if key == data.args.midi_duration_1 {
+        data.duration = Duration::D1;
+    }
+
+    if key == data.args.midi_duration_2 {
+        data.duration = Duration::D2;
+    }
+
+    if key == data.args.midi_duration_4 {
+        data.duration = Duration::D4;
+    }
+
+    if key == data.args.midi_duration_8 {
+        data.duration = Duration::D8;
+    }
+
+    if key == data.args.midi_duration_16 {
+        data.duration = Duration::D16;
     }
 
     let mut enigo = enigo::Enigo::new();
@@ -15,10 +39,50 @@ pub fn process_key(key: u8, data: &mut Data) {
     }
 }
 
+/// Handler for MIDI events.
+pub fn process_note_off(key: u8, data: &mut Data) {
+    if key == data.args.midi_duration_dot {
+        data.duration_dot = false;
+    }
+
+    if key == data.args.midi_duration_1 {
+        data.duration = Duration::D0;
+    }
+
+    if key == data.args.midi_duration_2 {
+        data.duration = Duration::D0;
+    }
+
+    if key == data.args.midi_duration_4 {
+        data.duration = Duration::D0;
+    }
+
+    if key == data.args.midi_duration_8 {
+        data.duration = Duration::D0;
+    }
+
+    if key == data.args.midi_duration_16 {
+        data.duration = Duration::D0;
+    }
+}
+
 /// Translate MIDI keys into LilyPond note entries.
 fn translate(key: u8, data: &Data) -> String {
-    let note = note_with_octave_modifier(key, data);
-    note
+    let mut note: Vec<_> = note_with_octave_modifier(key, data).chars().collect();
+
+    if note.is_empty() {
+        return "".to_string();
+    }
+
+    // Append the duration (if any).
+    note.extend(data.duration.to_string().chars());
+
+    // Append a dot if necessary.
+    if data.duration_dot {
+        note.push('.');
+    }
+
+    note.into_iter().collect()
 }
 
 /// Calculate the note with an appropriate octave modifier.
