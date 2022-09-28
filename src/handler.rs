@@ -33,6 +33,27 @@ pub fn process_note_on(key: u8, data: &mut Data) {
     }
 
     let mut enigo = enigo::Enigo::new();
+
+    if key == data.args.midi_backspace {
+        enigo.key_click(enigo::Key::Backspace);
+        return;
+    }
+
+    if key == data.args.midi_custom_1 {
+        enigo.key_sequence(&data.args.midi_custom_1_value);
+        return;
+    }
+
+    if key == data.args.midi_custom_2 {
+        enigo.key_sequence(&data.args.midi_custom_2_value);
+        return;
+    }
+
+    if key == data.args.midi_custom_3 {
+        enigo.key_sequence(&data.args.midi_custom_3_value);
+        return;
+    }
+
     let key = translate(key, data);
     if !key.is_empty() {
         enigo.key_sequence(&format!("{key} "));
@@ -119,7 +140,7 @@ fn raw_note(key: u8, data: &Data) -> &'static str {
             48 => "c",
             49 => "des",
             50 => "d",
-            51 => "ees",
+            51 => "es",
             52 => "e",
             53 => "f",
             54 => "ges",
