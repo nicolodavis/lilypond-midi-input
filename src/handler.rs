@@ -1,4 +1,5 @@
 use crate::data::{Data, Mode};
+use enigo::KeyboardControllable;
 
 /// Handler for MIDI events.
 pub fn process_key(key: u8, data: &mut Data) {
@@ -7,10 +8,10 @@ pub fn process_key(key: u8, data: &mut Data) {
         return;
     }
 
+    let mut enigo = enigo::Enigo::new();
     let key = translate(key, data);
     if !key.is_empty() {
-        xdotool::keyboard::type_text(key, opts());
-        xdotool::keyboard::send_key("space", opts());
+        enigo.key_sequence(&format!("{key} "));
     }
 }
 
@@ -49,8 +50,4 @@ fn translate(key: u8, data: &Data) -> &'static str {
             _ => "",
         },
     }
-}
-
-fn opts() -> xdotool::optionvec::OptionVec<xdotool::command::options::KeyboardOption> {
-    xdotool::optionvec::OptionVec::<xdotool::command::options::KeyboardOption>::new()
 }
