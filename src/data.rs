@@ -1,10 +1,16 @@
+use crate::args::Args;
+
 pub struct Data {
+    pub args: Args,
     pub mode: Mode,
 }
 
-impl Default for Data {
-    fn default() -> Self {
-        Self { mode: Mode::Sharp }
+impl Data {
+    pub fn new(args: &Args) -> Self {
+        Self {
+            args: args.clone(),
+            mode: Mode::Sharp,
+        }
     }
 }
 
