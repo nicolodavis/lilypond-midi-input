@@ -2,6 +2,7 @@
 name = "lilypond-midi-entry"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
 
 [dependencies]
 midir = "0.8"
