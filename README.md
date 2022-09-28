@@ -1,6 +1,6 @@
-# LilyPond MIDI Entry
+# LilyPond MIDI Input
 
-Enter LilyPond notes like "c", "d", "gis" etc. using a MIDI keyboard.
+Enter LilyPond notes like "c", "d", "gis" etc. using a MIDI controller.
 
 ## Features
 
