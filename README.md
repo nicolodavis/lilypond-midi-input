@@ -1,6 +1,6 @@
 # LilyPond MIDI Entry
 
-A program that allows using a MIDI keyboard to enter LilyPond notes like "c", "d", "gis" etc.
+Enter LilyPond notes like "c", "d", "gis" etc. using a MIDI keyboard.
 
 ## Features
 
@@ -18,5 +18,9 @@ cargo build --release
 ## Running
 
 ```
-lilypond-midi-entry --input-port KeyboardName
+lilypond-midi-entry --port KeyboardName
 ```
+
+## Compatibility
+
+Uses xdo to emit key events on Linux running X11. No support for Windows / Mac yet.
