@@ -3,7 +3,7 @@ use std::fmt::Display;
 #[derive(Debug)]
 pub enum Error {
     Generic(String),
-    ThroughPortNotFound,
+    PortNotFound,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
