@@ -30,5 +30,5 @@ pacman -S xdotool
 ## Running
 
 ```
-lilypond-midi-entry --port KeyboardName
+lilypond-midi-input --port KeyboardName
 ```
