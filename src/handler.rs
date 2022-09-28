@@ -16,37 +16,54 @@ pub fn process_key(key: u8, data: &mut Data) {
 }
 
 /// Translate MIDI keys into LilyPond note entries.
-fn translate(key: u8, data: &Data) -> &'static str {
+fn translate(key: u8, data: &Data) -> String {
+    let note = note_with_octave_modifier(key, data);
+    note
+}
+
+/// Calculate the note with an appropriate octave modifier.
+fn note_with_octave_modifier(key: u8, data: &Data) -> String {
+    match key {
+        36..=47 => format!("{},", raw_note(key + 12, data)),
+        48..=59 => format!("{}", raw_note(key, data)),
+        60..=71 => format!("{}'", raw_note(key - 12, data)),
+        72..=83 => format!("{}''", raw_note(key - 24, data)),
+        _ => "".to_string(),
+    }
+}
+
+/// Calculate the note without octave modifiers.
+fn raw_note(key: u8, data: &Data) -> &'static str {
     match data.mode {
         Mode::Sharp => match key {
-            36 | 48 | 60 | 72 | 84 => "c",
-            37 | 49 | 61 | 73 => "cis",
-            38 | 50 | 62 | 74 => "d",
-            39 | 51 | 63 | 75 => "dis",
-            40 | 52 | 64 | 76 => "e",
-            41 | 53 | 65 | 77 => "f",
-            42 | 54 | 66 | 78 => "fis",
-            43 | 55 | 67 | 79 => "g",
-            44 | 56 | 68 | 80 => "gis",
-            45 | 57 | 69 | 81 => "a",
-            46 | 58 | 70 | 82 => "ais",
-            47 | 59 | 71 | 83 => "b",
+            48 => "c",
+            49 => "cis",
+            50 => "d",
+            51 => "dis",
+            52 => "e",
+            53 => "f",
+            54 => "fis",
+            55 => "g",
+            56 => "gis",
+            57 => "a",
+            58 => "ais",
+            59 => "b",
             _ => "",
         },
 
         Mode::Flat => match key {
-            36 | 48 | 60 | 72 | 84 => "c",
-            37 | 49 | 61 | 73 => "des",
-            38 | 50 | 62 | 74 => "d",
-            39 | 51 | 63 | 75 => "ees",
-            40 | 52 | 64 | 76 => "e",
-            41 | 53 | 65 | 77 => "f",
-            42 | 54 | 66 | 78 => "ges",
-            43 | 55 | 67 | 79 => "g",
-            44 | 56 | 68 | 80 => "aes",
-            45 | 57 | 69 | 81 => "a",
-            46 | 58 | 70 | 82 => "bes",
-            47 | 59 | 71 | 83 => "b",
+            48 => "c",
+            49 => "des",
+            50 => "d",
+            51 => "ees",
+            52 => "e",
+            53 => "f",
+            54 => "ges",
+            55 => "g",
+            56 => "aes",
+            57 => "a",
+            58 => "bes",
+            59 => "b",
             _ => "",
         },
     }
