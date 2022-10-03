@@ -2,6 +2,7 @@ mod args;
 mod data;
 mod error;
 mod handler;
+mod macros;
 
 use clap::Parser;
 use data::Data;
@@ -52,9 +53,22 @@ fn get_input_port(client: &MidiInput, data: &Data) -> Result<MidiInputPort> {
     Err(Error::PortNotFound)
 }
 
+/// Read macros from the config file.
+fn read_macros(args: &args::Args) -> Result<macros::Macros> {
+    let s = if args.macro_file.is_empty() {
+        Default::default()
+    } else {
+        std::fs::read_to_string(&args.macro_file)?
+    };
+
+    s.parse::<macros::Macros>()
+        .map_err(|_| Error::MacroParsingError)
+}
+
 fn main() -> Result<()> {
     let args = args::Args::parse();
-    let data = Data::new(&args);
+    let macros = read_macros(&args)?;
+    let data = Data::new(&args, &macros);
     let client = MidiInput::new("lilypond-midi-entry")?;
     let port = get_input_port(&client, &data)?;
     let _connection = client.connect(&port, "midi-through", on_midi_event, data)?;

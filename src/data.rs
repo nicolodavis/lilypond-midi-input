@@ -1,19 +1,24 @@
 use crate::args::Args;
+use crate::macros::Macros;
 
 pub struct Data {
     pub args: Args,
+    pub macros: Macros,
     pub mode: Mode,
     pub duration: Duration,
     pub duration_dot: bool,
+    pub macro_mode: bool,
 }
 
 impl Data {
-    pub fn new(args: &Args) -> Self {
+    pub fn new(args: &Args, macros: &Macros) -> Self {
         Self {
             args: args.clone(),
+            macros: macros.clone(),
             mode: Mode::Sharp,
             duration: Duration::D0,
             duration_dot: false,
+            macro_mode: false,
         }
     }
 }

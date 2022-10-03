@@ -4,6 +4,7 @@ use std::fmt::Display;
 pub enum Error {
     Generic(String),
     PortNotFound,
+    MacroParsingError,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

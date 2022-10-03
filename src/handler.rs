@@ -12,6 +12,10 @@ pub fn process_note_on(key: u8, data: &mut Data) {
         data.duration_dot = true;
     }
 
+    if key == data.args.midi_macro_toggle {
+        data.macro_mode = true;
+    }
+
     if key == data.args.midi_duration_1 {
         data.duration = Duration::D1;
     }
@@ -32,31 +36,14 @@ pub fn process_note_on(key: u8, data: &mut Data) {
         data.duration = Duration::D16;
     }
 
-    let mut enigo = enigo::Enigo::new();
-
-    if key == data.args.midi_backspace {
-        enigo.key_click(enigo::Key::Backspace);
-        return;
-    }
-
-    if key == data.args.midi_custom_1 {
-        enigo.key_sequence(&data.args.midi_custom_1_value);
-        return;
-    }
-
-    if key == data.args.midi_custom_2 {
-        enigo.key_sequence(&data.args.midi_custom_2_value);
-        return;
-    }
-
-    if key == data.args.midi_custom_3 {
-        enigo.key_sequence(&data.args.midi_custom_3_value);
-        return;
-    }
-
-    let key = translate(key, data);
-    if !key.is_empty() {
-        enigo.key_sequence(&format!("{key} "));
+    if data.macro_mode {
+        process_macro(key, data);
+    } else {
+        let mut enigo = enigo::Enigo::new();
+        let key = translate(key, data);
+        if !key.is_empty() {
+            enigo.key_sequence(&format!("{key} "));
+        }
     }
 }
 
@@ -64,6 +51,10 @@ pub fn process_note_on(key: u8, data: &mut Data) {
 pub fn process_note_off(key: u8, data: &mut Data) {
     if key == data.args.midi_duration_dot {
         data.duration_dot = false;
+    }
+
+    if key == data.args.midi_macro_toggle {
+        data.macro_mode = false;
     }
 
     if key == data.args.midi_duration_1 {
@@ -84,6 +75,14 @@ pub fn process_note_off(key: u8, data: &mut Data) {
 
     if key == data.args.midi_duration_16 {
         data.duration = Duration::D0;
+    }
+}
+
+/// Translate the MIDI key into a macro sequence.
+fn process_macro(key: u8, data: &Data) {
+    if let Some(value) = data.macros.get(key.to_string()).and_then(|t| t.as_str()) {
+        let mut enigo = enigo::Enigo::new();
+        enigo.key_sequence(value);
     }
 }
 
