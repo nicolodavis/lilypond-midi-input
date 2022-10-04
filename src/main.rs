@@ -56,13 +56,12 @@ fn get_input_port(client: &MidiInput, data: &Data) -> Result<MidiInputPort> {
 /// Read macros from the config file.
 fn read_macros(args: &args::Args) -> Result<macros::Macros> {
     let s = if args.macro_file.is_empty() {
-        Default::default()
+        resource::resource_str!("macros.config").to_string()
     } else {
         std::fs::read_to_string(&args.macro_file)?
     };
 
-    s.parse::<macros::Macros>()
-        .map_err(|_| Error::MacroParsingError)
+    serde_yaml::from_str(&s).map_err(|_| Error::MacroParsingError)
 }
 
 fn main() -> Result<()> {

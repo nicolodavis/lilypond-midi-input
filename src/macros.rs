@@ -1,1 +1,1 @@
-pub type Macros = toml::Value;
+pub type Macros = std::collections::HashMap<String, String>;

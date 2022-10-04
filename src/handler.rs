@@ -80,7 +80,7 @@ pub fn process_note_off(key: u8, data: &mut Data) {
 
 /// Translate the MIDI key into a macro sequence.
 fn process_macro(key: u8, data: &Data) {
-    if let Some(value) = data.macros.get(key.to_string()).and_then(|t| t.as_str()) {
+    if let Some(value) = data.macros.get(&key.to_string()) {
         let mut enigo = enigo::Enigo::new();
         enigo.key_sequence(value);
     }

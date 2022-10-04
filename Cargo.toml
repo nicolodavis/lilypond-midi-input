@@ -5,8 +5,10 @@ edition = "2021"
 license = "MIT"
 
 [dependencies]
-clap = { version = "3.2.22", features = ["derive"] }
+clap = { version = "4", features = ["derive"] }
 enigo = "0.0.14"
 midir = "0.8"
 midly = "0.5"
-toml = "0.5.9"
+serde = "1.0"
+serde_yaml = "0.9"
+resource = "0.5"
