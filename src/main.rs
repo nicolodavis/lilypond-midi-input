@@ -39,6 +39,7 @@ fn get_input_port(client: &MidiInput, data: &Data) -> Result<MidiInputPort> {
     let mut names = Vec::new();
     for port in client.ports() {
         let name = client.port_name(&port)?;
+        println!("input port: {name}");
         names.push(name.clone());
         if name.contains(&data.args.port) {
             return Ok(port.clone());
